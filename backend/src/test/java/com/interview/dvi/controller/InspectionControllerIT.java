@@ -126,7 +126,7 @@ public class InspectionControllerIT extends BaseIntegrationTest {
 
         authenticated( webTestClient.delete()
                 .uri("/api/v1/inspections/{id}", inspection.getId()),
-                    TestDataUtils.USER_ID_TECH_1, TestDataUtils.STAFF_ROLE)
+                    TestDataUtils.USER_ID_ADMIN, TestDataUtils.ADMIN_ROLE)
                 .exchange()
                 .expectStatus().isNoContent();
 
