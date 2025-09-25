@@ -1,12 +1,13 @@
 package com.interview.dvi.controller;
 
+import com.interview.dvi.testsupport.utils.TestDataUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.math.BigDecimal;
 
-import com.interview.dvi.BaseIntegrationTest;
+import com.interview.dvi.testsupport.BaseIntegrationTest;
 import com.interview.dvi.model.dto.CreateInspectionRequest;
 import com.interview.dvi.model.dto.InspectionResponse;
 import com.interview.dvi.model.dto.UpdateInspectionRequest;
@@ -17,8 +18,8 @@ import com.interview.dvi.repository.InspectionRepository;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import static com.interview.dvi.utils.TestDataUtils.TEST_VIN1;
-import static com.interview.dvi.utils.TestDataUtils.getTestInspectionDraft;
+import static com.interview.dvi.testsupport.utils.TestDataUtils.TEST_VIN1;
+import static com.interview.dvi.testsupport.utils.TestDataUtils.getTestInspectionDraft;
 
 
 public class InspectionControllerIT extends BaseIntegrationTest {
@@ -30,6 +31,13 @@ public class InspectionControllerIT extends BaseIntegrationTest {
     private WebTestClient webTestClient;
 
     @Test
+    void given_no_token_when_call_protected_then_401() {
+        webTestClient.get().uri("/api/v1/inspections?page=0&size=5")
+                .exchange()
+                .expectStatus().isUnauthorized();
+    }
+
+    @Test
     void given_no_data_when_create_inspection_then_data_created() {
         var createInspectionRequest = new CreateInspectionRequest(TEST_VIN1,
                                                         "Initial Inspection started.",
@@ -38,10 +46,11 @@ public class InspectionControllerIT extends BaseIntegrationTest {
 
         assertEquals(0, inspectionRepository.count());
 
-        InspectionResponse response = webTestClient
+        InspectionResponse response = authenticated(webTestClient
                 .post()
                 .uri("/api/v1/inspections")
-                .bodyValue(createInspectionRequest)
+                .bodyValue(createInspectionRequest),
+                TestDataUtils.USER_ID_TECH_1, TestDataUtils.STAFF_ROLE)
                 .exchange()
                 .expectStatus().isCreated()
                 .expectBody(InspectionResponse.class).returnResult().getResponseBody();
@@ -74,9 +83,10 @@ public class InspectionControllerIT extends BaseIntegrationTest {
         Inspection saved = inspectionRepository.save(inspection);
 
         // Test get by ID
-        InspectionResponse fetchedResponse = webTestClient
+        InspectionResponse fetchedResponse = authenticated(webTestClient
                 .get()
-                .uri("/api/v1/inspections/{id}", saved.getId())
+                .uri("/api/v1/inspections/{id}", saved.getId()),
+                    TestDataUtils.USER_ID_TECH_1, TestDataUtils.STAFF_ROLE)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(InspectionResponse.class).returnResult().getResponseBody();
@@ -95,9 +105,10 @@ public class InspectionControllerIT extends BaseIntegrationTest {
 
         var updateRequest = new UpdateInspectionRequest("New Note", "Repair needed", BigDecimal.valueOf(200));
 
-        InspectionResponse response = webTestClient.put()
+        InspectionResponse response = authenticated(webTestClient.put()
                 .uri("/api/v1/inspections/{id}", inspection.getId())
-                .bodyValue(updateRequest)
+                .bodyValue(updateRequest),
+                    TestDataUtils.USER_ID_TECH_1, TestDataUtils.STAFF_ROLE)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(InspectionResponse.class)
@@ -113,8 +124,9 @@ public class InspectionControllerIT extends BaseIntegrationTest {
     void given_existing_inspection_when_delete_then_removed() {
         Inspection inspection = inspectionRepository.save(getTestInspectionDraft(TEST_VIN1));
 
-        webTestClient.delete()
-                .uri("/api/v1/inspections/{id}", inspection.getId())
+        authenticated( webTestClient.delete()
+                .uri("/api/v1/inspections/{id}", inspection.getId()),
+                    TestDataUtils.USER_ID_TECH_1, TestDataUtils.STAFF_ROLE)
                 .exchange()
                 .expectStatus().isNoContent();
 
@@ -125,8 +137,10 @@ public class InspectionControllerIT extends BaseIntegrationTest {
     void given_existing_inspection_when_submit_then_status_submitted_and_response() {
         Inspection inspection = inspectionRepository.save(getTestInspectionDraft(TEST_VIN1));
 
-        String response = webTestClient.post()
-                .uri("/api/v1/inspections/{id}/submit", inspection.getId())
+        String response = authenticated(webTestClient
+                .post()
+                .uri("/api/v1/inspections/{id}/submit", inspection.getId()),
+                    TestDataUtils.USER_ID_TECH_1, TestDataUtils.STAFF_ROLE)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(String.class)

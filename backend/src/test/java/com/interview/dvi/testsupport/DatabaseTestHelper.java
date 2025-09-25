@@ -1,4 +1,4 @@
-package com.interview.dvi;
+package com.interview.dvi.testsupport;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
