@@ -27,7 +27,7 @@ public class InspectionItemService {
     private final InspectionItemRepository inspectionItemRepository;
 
     public ItemResponse addItem(Integer inspectionId, CreateItemRequest request) {
-        log.info("Adding item to inspection with id: {}", inspectionId);
+        log.debug("Adding item to inspection with id: {}", inspectionId);
         var parent = findParent(inspectionId);
         requireEditable(parent);
 
@@ -38,6 +38,7 @@ public class InspectionItemService {
     }
 
     public Page<ItemResponse> listAll(Integer inspectionId, Pageable pageable) {
+        log.debug("Listing items for inspection with id: {}", inspectionId);
         findParent(inspectionId);
 
         return inspectionItemRepository.findByInspectionId(inspectionId, pageable)
@@ -45,7 +46,7 @@ public class InspectionItemService {
     }
 
     public ItemResponse update(Integer inspectionId, Integer itemId, UpdateItemRequest request) {
-        log.info("Updating item with id: {} for inspection with id: {}", itemId, inspectionId);
+        log.debug("Updating item with id: {} for inspection with id: {}", itemId, inspectionId);
         var parent = findParent(inspectionId);
         requireEditable(parent);
 
@@ -61,7 +62,7 @@ public class InspectionItemService {
 
     @Transactional
     public void delete(Integer inspectionId, Integer itemId) {
-        log.info("Deleting item with id: {} for inspection with id: {}", itemId, inspectionId);
+        log.debug("Deleting item with id: {} for inspection with id: {}", itemId, inspectionId);
         var parent = findParent(inspectionId);
         requireEditable(parent);
 
