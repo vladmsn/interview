@@ -26,6 +26,7 @@ public class InspectionItemService {
     private final InspectionRepository inspectionRepository;
     private final InspectionItemRepository inspectionItemRepository;
 
+    @Transactional
     public ItemResponse addItem(Integer inspectionId, CreateItemRequest request) {
         log.debug("Adding item to inspection with id: {}", inspectionId);
         var parent = findParent(inspectionId);
@@ -45,6 +46,7 @@ public class InspectionItemService {
                 .map(InspectionItemMapper::toResponse);
     }
 
+    @Transactional
     public ItemResponse update(Integer inspectionId, Integer itemId, UpdateItemRequest request) {
         log.debug("Updating item with id: {} for inspection with id: {}", itemId, inspectionId);
         var parent = findParent(inspectionId);

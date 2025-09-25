@@ -9,7 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.interview.dvi.model.entities.InspectionItem;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional(readOnly = true)
 public interface InspectionItemRepository extends JpaRepository<InspectionItem, Integer> {
     @Modifying
     @Query("DELETE FROM InspectionItem i where i.id = :itemId")

@@ -13,15 +13,21 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import lombok.Data;
 
 import java.time.Instant;
 
 import com.interview.dvi.model.enums.Severity;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "inspection_item")
 @SQLRestriction("is_deleted = false")
@@ -61,5 +67,18 @@ public class InspectionItem {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = Instant.now();
+    }
+
+    @Override
+    public String toString() {
+        return "InspectionItem{" +
+                "id=" + id +
+                ", category='" + category + '\'' +
+                ", severity=" + severity +
+                ", note='" + note + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", isDeleted=" + isDeleted +
+                '}';
     }
 }
