@@ -20,6 +20,7 @@ import com.interview.dvi.model.dto.InspectionResponse;
 import com.interview.dvi.repository.InspectionRepository;
 import com.interview.dvi.repository.InspectionItemRepository;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -29,6 +30,8 @@ public class InspectionService {
 
     private final InspectionRepository inspectionRepository;
     private final InspectionItemRepository itemRepository;
+
+    private final ApprovalTokenService approvalTokenService;
 
     @Transactional
     public InspectionResponse create(CreateInspectionRequest createInspectionRequest) {
@@ -100,7 +103,7 @@ public class InspectionService {
     }
 
     @Transactional
-    public String submit(Integer id) {
+    public Map<String, String> submit(Integer id) {
         log.debug("Submitting inspection with id: {}", id);
         var inspection = inspectionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Inspection not found with id: " + id));
@@ -108,7 +111,8 @@ public class InspectionService {
 
         inspection.setStatus(Status.SUBMITTED);
         inspectionRepository.save(inspection);
-        return "SUBMITTED";
+
+        return approvalTokenService.generateShareLinks(1, 15L);
     }
 
     private void requireEditable(Inspection inspection) {

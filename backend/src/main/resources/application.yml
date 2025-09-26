@@ -36,3 +36,8 @@ spring:
     console:
       enabled: true
       path: /h2-console
+
+dvi:
+  approval:
+    secret: "change-me-please-at-least-32-chars-long"
+    ttl: 1h

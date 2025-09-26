@@ -27,6 +27,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
+                        .requestMatchers("/public/**").permitAll() // Allow access to public endpoints
                         .requestMatchers(toH2Console()).permitAll()  // Allow access to H2 console
                         .requestMatchers("/actuator/**").permitAll()  // Allow access to actuator endpoints
                         // Allow access to Swagger UI and API docs

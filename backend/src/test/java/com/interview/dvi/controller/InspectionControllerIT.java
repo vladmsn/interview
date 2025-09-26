@@ -3,9 +3,11 @@ package com.interview.dvi.controller;
 import com.interview.dvi.testsupport.utils.TestDataUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import com.interview.dvi.testsupport.BaseIntegrationTest;
 import com.interview.dvi.model.dto.CreateInspectionRequest;
@@ -131,13 +133,13 @@ public class InspectionControllerIT extends BaseIntegrationTest {
     void given_existing_inspection_when_submit_then_status_submitted_and_response() {
         Inspection inspection = inspectionRepository.save(getTestInspectionDraft(TEST_VIN1));
 
-        String response = authenticated(webTestClient
+        Map<String, String> response = authenticated(webTestClient
                 .post()
                 .uri("/api/v1/inspections/{id}/submit", inspection.getId()),
                     TestDataUtils.USER_ID_TECH_1, TestDataUtils.STAFF_ROLE)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(String.class)
+                .expectBody(new ParameterizedTypeReference<Map<String, String>>() {})
                 .returnResult().getResponseBody();
 
         assertNotNull(response);

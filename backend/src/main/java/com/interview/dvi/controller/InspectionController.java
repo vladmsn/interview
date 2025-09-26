@@ -23,6 +23,8 @@ import com.interview.dvi.model.dto.InspectionResponse;
 import com.interview.dvi.model.dto.UpdateInspectionRequest;
 import com.interview.dvi.service.InspectionService;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1/inspections")
 @RequiredArgsConstructor
@@ -81,7 +83,7 @@ public class InspectionController implements InspectionsAPI {
     @Override
     @PostMapping("/{id}/submit")
     @PreAuthorize("hasRole('STAFF')")
-    public String submitInspection(@PathVariable Integer id) {
+    public Map<String, String> submitInspection(@PathVariable Integer id) {
         return inspectionService.submit(id);
     }
 }

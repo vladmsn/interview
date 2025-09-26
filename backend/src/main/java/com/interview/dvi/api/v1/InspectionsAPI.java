@@ -12,6 +12,8 @@ import com.interview.dvi.model.dto.CreateInspectionRequest;
 import com.interview.dvi.model.dto.InspectionResponse;
 import com.interview.dvi.model.dto.UpdateInspectionRequest;
 
+import java.util.Map;
+
 @Tag(name = "Inspections", description = "Inspection lifecycle & management API")
 public interface InspectionsAPI {
     @Operation(summary = "Create a DRAFT inspection",
@@ -69,5 +71,5 @@ public interface InspectionsAPI {
                     @ApiResponse(responseCode = "400", description = "Bad Request"),
                     @ApiResponse(responseCode = "404", description = "Not Found")
             })
-    String submitInspection(Integer id);
+    Map<String, String> submitInspection(Integer id);
 }
