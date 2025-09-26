@@ -8,7 +8,8 @@ import com.interview.dvi.model.entities.InspectionItem;
 import com.interview.dvi.model.enums.Status;
 import com.interview.dvi.model.exceptions.ConflictException;
 import com.interview.dvi.model.exceptions.NotFoundException;
-import com.interview.dvi.model.mapper.InspectionItemMapper;
+import com.interview.dvi.model.utils.InspectionItemMapper;
+import com.interview.dvi.model.utils.InspectionValidators;
 import com.interview.dvi.repository.InspectionItemRepository;
 import com.interview.dvi.repository.InspectionRepository;
 import jakarta.transaction.Transactional;
@@ -29,6 +30,8 @@ public class InspectionItemService {
     @Transactional
     public ItemResponse addItem(Integer inspectionId, CreateItemRequest request) {
         log.debug("Adding item to inspection with id: {}", inspectionId);
+        InspectionValidators.validateCreateItem(request);
+
         var parent = findParent(inspectionId);
         requireEditable(parent);
 
@@ -49,6 +52,8 @@ public class InspectionItemService {
     @Transactional
     public ItemResponse update(Integer inspectionId, Integer itemId, UpdateItemRequest request) {
         log.debug("Updating item with id: {} for inspection with id: {}", itemId, inspectionId);
+        InspectionValidators.validateUpdateItem(request);
+
         var parent = findParent(inspectionId);
         requireEditable(parent);
 

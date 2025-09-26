@@ -23,7 +23,6 @@ spring:
     locations: classpath:database/migration
   jpa:
     hibernate.ddl-auto: none
-    show-sql: true
     open-in-view: false
     properties:
       hibernate:

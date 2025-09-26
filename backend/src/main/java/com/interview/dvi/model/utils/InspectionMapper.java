@@ -1,4 +1,4 @@
-package com.interview.dvi.model.mapper;
+package com.interview.dvi.model.utils;
 
 import lombok.experimental.UtilityClass;
 

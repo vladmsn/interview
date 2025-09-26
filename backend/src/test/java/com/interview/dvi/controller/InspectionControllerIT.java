@@ -55,14 +55,11 @@ public class InspectionControllerIT extends BaseIntegrationTest {
                 .expectStatus().isCreated()
                 .expectBody(InspectionResponse.class).returnResult().getResponseBody();
 
-        // Verify response
-        assertNotNull(response);
+""        assertNotNull(response);
         assertEquals(1, response.id());
         assertEquals(TEST_VIN1, response.vin());
         assertEquals(Status.DRAFT, response.status());
 
-
-        // Verify data in the database
         assertEquals(1, inspectionRepository.count());
         var savedEntity = inspectionRepository.findAll().getFirst();
 
@@ -74,7 +71,6 @@ public class InspectionControllerIT extends BaseIntegrationTest {
 
     @Test
     void given_existing_inspection_when_get_by_id_then_return_inspection() {
-        // Prepare data
         Inspection inspection = new Inspection();
         inspection.setVin(TEST_VIN1);
         inspection.setStatus(Status.DRAFT);
@@ -82,7 +78,6 @@ public class InspectionControllerIT extends BaseIntegrationTest {
 
         Inspection saved = inspectionRepository.save(inspection);
 
-        // Test get by ID
         InspectionResponse fetchedResponse = authenticated(webTestClient
                 .get()
                 .uri("/api/v1/inspections/{id}", saved.getId()),
@@ -91,7 +86,6 @@ public class InspectionControllerIT extends BaseIntegrationTest {
                 .expectStatus().isOk()
                 .expectBody(InspectionResponse.class).returnResult().getResponseBody();
 
-        // Verify fetched data
         assertNotNull(fetchedResponse);
         assertEquals(1, fetchedResponse.id());
         assertEquals(TEST_VIN1, fetchedResponse.vin());

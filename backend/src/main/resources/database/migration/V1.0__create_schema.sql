@@ -15,7 +15,6 @@ CREATE TABLE inspection (
 CREATE TABLE inspection_item (
     id            SERIAL      PRIMARY KEY,
     inspection_id INTEGER       NOT NULL,
-    name          VARCHAR(128)  NOT NULL,
     category      VARCHAR(64)   NOT NULL,
     severity      VARCHAR(16)   NOT NULL,
     note          VARCHAR(255),

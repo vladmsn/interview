@@ -5,7 +5,8 @@ import com.interview.dvi.model.entities.Inspection;
 import com.interview.dvi.model.enums.Status;
 import com.interview.dvi.model.exceptions.ConflictException;
 import com.interview.dvi.model.exceptions.NotFoundException;
-import com.interview.dvi.model.mapper.InspectionMapper;
+import com.interview.dvi.model.utils.InspectionMapper;
+import com.interview.dvi.model.utils.InspectionValidators;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +33,8 @@ public class InspectionService {
     @Transactional
     public InspectionResponse create(CreateInspectionRequest createInspectionRequest) {
         log.info("Creating inspection for VIN: {}", createInspectionRequest.vin());
+        InspectionValidators.validateCreateInspection(createInspectionRequest);
+
         Inspection inspection = InspectionMapper.toEntity(createInspectionRequest);
         var saved = inspectionRepository.save(inspection);
 
@@ -57,6 +60,8 @@ public class InspectionService {
     @Transactional
     public InspectionResponse update(Integer id, UpdateInspectionRequest updateInspectionRequest) {
         log.debug("Updating inspection with id: {}, request: {}", id, updateInspectionRequest);
+        InspectionValidators.validateUpdateInspection(updateInspectionRequest);
+
         var inspection = inspectionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Inspection not found with id: " + id));
 
