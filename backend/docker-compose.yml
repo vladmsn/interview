@@ -1,0 +1,28 @@
+services:
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    extra_hosts: [ "host.docker.internal:host-gateway" ]
+    restart: always
+    command: [ "--config.file=/etc/prometheus/prometheus.yml" ]
+    volumes:
+      - ./observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana
+    extra_hosts: [ "host.docker.internal:host-gateway" ]
+    restart: always
+    depends_on:
+      - prometheus
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+    volumes:
+      - ./observability/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./observability/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+    ports:
+      - "3000:3000"

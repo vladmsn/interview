@@ -55,7 +55,7 @@ public class InspectionControllerIT extends BaseIntegrationTest {
                 .expectStatus().isCreated()
                 .expectBody(InspectionResponse.class).returnResult().getResponseBody();
 
-""        assertNotNull(response);
+        assertNotNull(response);
         assertEquals(1, response.id());
         assertEquals(TEST_VIN1, response.vin());
         assertEquals(Status.DRAFT, response.status());

@@ -17,7 +17,7 @@ Content-Type: application/json
 }
 
 ### Get Inspection by ID (STAFF/ADMIN/USER)
-GET {{client.host.url}}/api/v1/inspections/1
+GET {{client.host.url}}/api/v1/inspections/2
 Authorization: Bearer {{auth.token.ADMIN}}
 
 ### List Inspections (STAFF/ADMIN)
@@ -25,7 +25,7 @@ GET {{client.host.url}}/api/v1/inspections?page=0&size=10
 Authorization: Bearer {{auth.token.ADMIN}}
 
 ### Update Inspection (STAFF/ADMIN; only DRAFT)
-PUT {{client.host.url}}/api/v1/inspections/1
+PUT {{client.host.url}}/api/v1/inspections/2
 Authorization: Bearer {{auth.token.STAFF}}
 Content-Type: application/json
 
@@ -36,7 +36,7 @@ Content-Type: application/json
 }
 
 ### Submit Inspection (STAFF)
-POST {{client.host.url}}/api/v1/inspections/1/submit
+POST {{client.host.url}}/api/v1/inspections/4/submit
 Authorization: Bearer {{auth.token.STAFF}}
 
 ### Archive Inspection (ADMIN)

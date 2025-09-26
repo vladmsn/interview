@@ -32,7 +32,7 @@ public class InspectionService {
 
     @Transactional
     public InspectionResponse create(CreateInspectionRequest createInspectionRequest) {
-        log.info("Creating inspection for VIN: {}", createInspectionRequest.vin());
+        log.debug("Creating inspection for VIN: {}", createInspectionRequest.vin());
         InspectionValidators.validateCreateInspection(createInspectionRequest);
 
         Inspection inspection = InspectionMapper.toEntity(createInspectionRequest);
@@ -42,7 +42,7 @@ public class InspectionService {
     }
 
     public InspectionResponse searchById(Integer inspectionId) {
-        log.info("Searching inspection for ID: {}", inspectionId);
+        log.debug("Searching inspection for ID: {}", inspectionId);
         var inspection = inspectionRepository.findById(inspectionId)
                 .orElseThrow(() -> new NotFoundException("Inspection not found with id: " + inspectionId));
 
