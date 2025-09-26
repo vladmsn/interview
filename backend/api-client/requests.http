@@ -1,0 +1,74 @@
+### Swagger UI
+GET {{client.host.url}}/swagger-ui.html
+
+### Health
+GET {{client.host.url}}/actuator/health
+
+### Create Inspection (STAFF)
+POST {{client.host.url}}/api/v1/inspections
+Authorization: Bearer {{auth.token.STAFF}}
+Content-Type: application/json
+
+{
+  "vin": "1HGCM82633A004392",
+  "note": "Initial inspection started",
+  "recommendation": null,
+  "estimatedCost": null
+}
+
+### Get Inspection by ID (STAFF/ADMIN/USER)
+GET {{client.host.url}}/api/v1/inspections/1
+Authorization: Bearer {{auth.token.ADMIN}}
+
+### List Inspections (STAFF/ADMIN)
+GET {{client.host.url}}/api/v1/inspections?page=0&size=10
+Authorization: Bearer {{auth.token.ADMIN}}
+
+### Update Inspection (STAFF/ADMIN; only DRAFT)
+PUT {{client.host.url}}/api/v1/inspections/1
+Authorization: Bearer {{auth.token.STAFF}}
+Content-Type: application/json
+
+{
+  "note": "Updated summary",
+  "recommendation": "Replace brake pads",
+  "estimatedCost": 250.00
+}
+
+### Submit Inspection (STAFF)
+POST {{client.host.url}}/api/v1/inspections/1/submit
+Authorization: Bearer {{auth.token.STAFF}}
+
+### Archive Inspection (ADMIN)
+POST {{client.host.url}}/api/v1/inspections/1/archive
+Authorization: Bearer {{auth.token.ADMIN}}
+
+### Items - Add (STAFF/ADMIN; only DRAFT)
+POST {{client.host.url}}/api/v1/inspections/1/items
+Authorization: Bearer {{auth.token.STAFF}}
+Content-Type: application/json
+
+{
+  "category": "Brakes",
+  "severity": "HIGH",
+  "note": "Front pads at 2mm"
+}
+
+### Items - List (ALL ROLES)
+GET {{client.host.url}}/api/v1/inspections/1/items?page=0&size=10
+Authorization: Bearer {{auth.token.USER}}
+
+### Items - Update (STAFF/ADMIN; only DRAFT)
+PUT {{client.host.url}}/api/v1/inspections/1/items/1
+Authorization: Bearer {{auth.token.STAFF}}
+Content-Type: application/json
+
+{
+  "category": "Brakes",
+  "severity": "CRITICAL",
+  "note": "Pads below 2mm"
+}
+
+### Items - Delete (ADMIN; only DRAFT)
+DELETE {{client.host.url}}/api/v1/inspections/1/items/1
+Authorization: Bearer {{auth.token.ADMIN}}
