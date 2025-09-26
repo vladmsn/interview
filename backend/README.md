@@ -5,15 +5,17 @@ Spring Boot service for managing **vehicle inspections** and **inspection items*
 ## Features
 
 - CRUD for **Inspections** (aggregate) and **Inspection Items** (child)
-- Simple workflow: `DRAFT → SUBMITTED` (mutations blocked after submit)
-- Path-based **RBAC** (GET vs. mutate vs. delete)
+- Workflow: `DRAFT → SUBMITTED` (mutations blocked after submit) + customer decision via **pre-signed links** → `APPROVED` or `DECLINED`- **RBAC** via JWT roles
 - **OpenAPI/Swagger** documentation
 - **Flyway** database migrations (H2 in-memory for the exercise)
+- **Observability**: Prometheus metrics + Grafana dashboard (docker-compose)
+
 ---
 
 ## Prerequisites
 - Maven 
 - Java 21
+- Docker (for Prometheus + Grafana)
 
 ## Running Locally
 ```bash
@@ -31,6 +33,9 @@ java -jar target/interview-1.0-SNAPSHOT.jar
 
 - H2 Console: http://localhost:8080/h2-console (JDBC: jdbc:h2:mem:testdb, user: sa, password: password)
 
+Health/metrics:
+- Health: http://localhost:8080/actuator/health
+- Prometheus scrape: http://localhost:8080/actuator/prometheus
 ---
 
 ### Domain Model
@@ -73,6 +78,11 @@ After `SUBMITTED`, editing or deleting items is rejected with `409 Conflict`.
 | `/api/v1/inspections/{id}/items/{itemId}` | `PUT`    | Update item (**only in `DRAFT`**) | `STAFF`/`ADMIN`        |
 | `/api/v1/inspections/{id}/items/{itemId}` | `DELETE` | Delete item (**only in `DRAFT`**) | `ADMIN`                |
 
+<br/>
+
+#### Customer Approval via Pre-Signed URL
+
+`GET /public/inspections/decision?token=...` → verifies token and records decision (APPROVED / REJECTED).
 
 ---
 
@@ -86,6 +96,12 @@ openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out src/test/resou
 openssl rsa -pubout -in src/test/resources/keys/private.pem -out src/main/resources/keys/public.pem
 ```
 
+To generate JWTs for testing, use TokenGenerator utilyty:
+
+```bash
+mvn -q -Dexec.mainClass=com.interview.dvi.tools.TokenGenerator -Dexec.classpathScope=test exec:java
+```
+
 ***Disclaimer***: Keys and tokens are development-only and intentionally long-lived for convenience.
 
 ---
@@ -95,3 +111,15 @@ openssl rsa -pubout -in src/test/resources/keys/private.pem -out src/main/resour
 - **Test config**: src/test/resources/application-test.yml
 - **H2**: jdbc:h2:mem:testdb (user sa, password password)
 - **Swagger/OpenAPI** enabled by default
+
+--- 
+### HTTP Client Collection (optional)
+A ready requests.http (VS Code/IntelliJ) is included:
+- Create/list/update/delete inspections and items
+- Submit inspection
+- Share approval links
+
+---
+## Notes / Future Work
+- Using a real OAuth2 server provider (e.g., Keycloak, Okta) for JWTs
+- Persistent DB and migrations for production

@@ -41,3 +41,4 @@ dvi:
   approval:
     secret: "change-me-please-at-least-32-chars-long"
     ttl: 1h
+    base-url: http://localhost:8080
